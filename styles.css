@@ -1,0 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Anton&display=swap");
+
+.post {
+  align-items: center;
+  list-style-type: none;
+  border: 2px solid black;
+  border-radius: 20px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.postTitle {
+  font-weight: bold;
+  font-family: "Shadows Into Light";
+}
+
+.postIds {
+  font-family: "Anton", sans-serif;
+}
+
+.postBody{
+    font-family: 'Times New Roman', Times, serif;
+}
