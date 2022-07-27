@@ -19,6 +19,19 @@
   font-family: "Anton", sans-serif;
 }
 
-.postBody{
-    font-family: 'Times New Roman', Times, serif;
+.postBody {
+  font-family: "Times New Roman", Times, serif;
+}
+
+.paginator {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  max-width: 150px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.paginatorItem{
+    cursor: pointer;
 }
