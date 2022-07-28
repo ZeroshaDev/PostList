@@ -32,6 +32,10 @@
   border-radius: 5px;
 }
 
-.paginatorItem{
-    cursor: pointer;
+.paginatorItem {
+  cursor: pointer;
+}
+
+.paginatorItemCurrent {
+  background-color: darkgrey;
 }

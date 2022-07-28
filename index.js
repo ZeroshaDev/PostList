@@ -42,22 +42,32 @@ function pagination(count, data) {
   for (let i = 0; i < cntr; ++i) {
     let paginatorItem = document.createElement("div");
     paginatorItem.classList.add("paginatorItem");
-    paginatorItem.addEventListener("click", function (e) {
-      document.querySelector(".postList").remove();
-      postLoader(
-        data.slice(i == 0 ? 0 : i * 10 - 1, paginatorItem.textContent * 10)
-      );
-      console.log(e.target);
-    });
     paginatorItem.textContent = `${i + 1}`;
     paginator.append(paginatorItem);
   }
+  paginator.addEventListener("click", (e) => {
+    if (e.target.classList == "paginatorItem") {
+      document.querySelector(".postList").remove();
+      document.querySelectorAll(".paginatorItem").forEach((item)=>{
+        item.classList.remove("paginatorItemCurrent");
+      });
+      postLoader(
+        data.slice(
+          e.target.textContent == 1 ? 0 : e.target.textContent * 10 - 10,
+          e.target.textContent * 10
+        )
+      );
+      e.target.classList.add("paginatorItemCurrent");
+    }
+    console.log(e.target);
+  });
 }
 
 const mainFunction = async () => {
   const dat = await fetchData();
   pagination(dat[1], dat[0]);
   postLoader(dat[0].slice(0, 10));
+  document.querySelector(".paginatorItem").classList.add("paginatorItemCurrent");
 };
 
 mainFunction();
