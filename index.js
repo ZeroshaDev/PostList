@@ -4,14 +4,28 @@ window.onload = function () {
     document.body.classList.add("loaded");
     document.body.classList.remove("loaded_hiding");
   }, 500);
+  let searchInput = document.querySelector(".searchInput");
+  searchInput.addEventListener("keyup", () => {
+    console.log();
+    search(searchInput.value);
+  });
 };
 
-const fetchData = async (skiped, limit) => {
-  let dat = await fetch(
-    `https://dummyjson.com/posts?skip=${skiped}&limit=${limit}`
-  );
-  dat = await dat.json();
-  return { data: dat.posts, total: dat.total };
+const fetchData = async (...additional) => {
+  if (additional.length === 2) {
+    let dat = await fetch(
+      `https://dummyjson.com/posts?skip=${additional[0]}&limit=${additional[1]}`
+    );
+    dat = await dat.json();
+    return { data: dat.posts, total: dat.total };
+  }
+  if (additional.length === 1) {
+    let dat = await fetch(
+      `https://dummyjson.com/posts/search?q=${additional[0]}`
+    );
+    dat = await dat.json();
+    return { data: dat.posts, total: dat.total };
+  }
 };
 
 function postLoader(dat) {
@@ -88,6 +102,8 @@ function pagination(count) {
   }
   paginator.addEventListener("click", (e) => {
     if (e.target.classList == "paginatorItem") {
+      document.querySelector(".searchInput").value = "";
+      console.log("click");
       document.querySelector(".postList").remove();
       document.querySelectorAll(".paginatorItem").forEach((item) => {
         item.classList.remove("active");
@@ -208,8 +224,8 @@ function paginatorReRender(current, last) {
 
 const app = async () => {
   const dat = await fetchData(0, 10);
-  pagination(dat.total);
   postLoader(dat.data);
+  pagination(dat.total);
   document.querySelector(".paginatorItem").classList.add("active");
 };
 
@@ -222,6 +238,18 @@ async function render(skip, limit) {
     document.body.classList.add("loaded");
     document.body.classList.remove("loaded_hiding");
   }, 500);
+}
+
+async function search(word) {
+  if (word.length === 0) {
+    const dat = await fetchData(0, 10);
+    document.querySelector(".postList").remove();
+    postLoader(dat.data);
+  } else {
+    const dat = await fetchData(word);
+    document.querySelector(".postList").remove();
+    postLoader(dat.data);
+  }
 }
 
 app();
