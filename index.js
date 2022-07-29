@@ -6,7 +6,6 @@ window.onload = function () {
   }, 500);
   let searchInput = document.querySelector(".searchInput");
   searchInput.addEventListener("keyup", () => {
-    console.log();
     search(searchInput.value);
   });
 };
