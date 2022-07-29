@@ -103,7 +103,6 @@ function pagination(count) {
   paginator.addEventListener("click", (e) => {
     if (e.target.classList == "paginatorItem") {
       document.querySelector(".searchInput").value = "";
-      console.log("click");
       document.querySelector(".postList").remove();
       document.querySelectorAll(".paginatorItem").forEach((item) => {
         item.classList.remove("active");
