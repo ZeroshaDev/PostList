@@ -1,9 +1,18 @@
 window.onload = function () {
-  document.body.classList.add("loaded_hiding");
-  window.setTimeout(function () {
-    document.body.classList.add("loaded");
-    document.body.classList.remove("loaded_hiding");
-  }, 500);
+  createLoader();
+  let paginator = document.createElement("div");
+  paginator.classList.add("paginator");
+  let search = document.createElement("div");
+  search.classList.add("search");
+  let img = document.createElement("img");
+  img.src = "rsource/search_FILL0_wght200_GRAD-25_opsz40.svg";
+  let input = document.createElement("input");
+  input.classList.add("searchInput");
+  input.placeholder = "Input word to search in DB";
+  input.type = "text";
+  search.append(img, input);
+  document.body.append(paginator, search);
+
   let searchInput = document.querySelector(".searchInput");
   searchInput.addEventListener("keyup", () => {
     search(searchInput.value);
