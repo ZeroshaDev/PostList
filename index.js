@@ -20,10 +20,10 @@ window.onload = function () {
   deleteLoader();
 };
 
-const fetchData = async (skip, limit, word) => {
+const fetchData = async (skip, word) => {
   let url = word
     ? `https://dummyjson.com/posts/search?q=${word}`
-    : `https://dummyjson.com/posts?skip=${skip}&limit=${limit}`;
+    : `https://dummyjson.com/posts?skip=${skip}&limit=10`;
   let dat = await fetch(url);
   dat = await dat.json();
   return { data: dat.posts, total: dat.total };
@@ -108,7 +108,7 @@ function renderPagination(count) {
       document.querySelectorAll(".paginatorItem").forEach((item) => {
         item.classList.remove("active");
       });
-      renderPostsList((e.target.textContent - 1) * 10, 10);
+      renderPostsList((e.target.textContent - 1) * 10);
       updatePaginator(e.target.textContent, cntr);
     }
   });
@@ -213,26 +213,26 @@ function comparePaginator(i, last, num) {
 }
 
 const app = async () => {
-  const dat = await fetchData(0, 10);
+  const dat = await fetchData(0);
   renderPosts(dat.data);
   renderPagination(dat.total);
   document.querySelector(".paginatorItem").classList.add("active");
 };
 
-async function renderPostsList(skip, limit) {
+async function renderPostsList(skip) {
   createLoader();
-  const dat = await fetchData(skip, limit);
+  const dat = await fetchData(skip);
   renderPosts(dat.data);
   deleteLoader();
 }
 
 async function search(word) {
   if (word.length === 0) {
-    const dat = await fetchData(0, 10);
+    const dat = await fetchData(0);
     document.querySelector(".postList").remove();
     renderPosts(dat.data);
   } else {
-    const dat = await fetchData(0, 0, word);
+    const dat = await fetchData(0, word);
     document.querySelector(".postList").remove();
     renderPosts(dat.data);
   }
