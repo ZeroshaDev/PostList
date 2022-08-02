@@ -2,31 +2,39 @@ window.onload = function () {
   createLoader();
   let paginator = document.createElement("div");
   paginator.classList.add("paginator");
-  let search = document.createElement("div");
-  search.classList.add("search");
+  let searchE = document.createElement("div");
+  searchE.classList.add("search");
   let img = document.createElement("img");
   img.src = "rsource/search_FILL0_wght200_GRAD-25_opsz40.svg";
   let input = document.createElement("input");
   input.classList.add("searchInput");
   input.placeholder = "Input word to search in DB";
   input.type = "text";
-  search.append(img, input);
-  document.body.append(paginator, search);
+  searchE.append(img, input);
+  document.body.append(paginator, searchE);
 
   let searchInput = document.querySelector(".searchInput");
-  searchInput.addEventListener("keyup", () => {
+  input.addEventListener("keyup", () => {
     search(searchInput.value);
   });
   deleteLoader();
 };
 
 const fetchData = async (skip, word) => {
-  let url = word
-    ? `https://dummyjson.com/posts/search?q=${word}`
-    : `https://dummyjson.com/posts?skip=${skip}&limit=10`;
+  let url = new URL("https://dummyjson.com/posts");
+  if (word) {
+    if (skip) {
+      url = url + `/search?q=${word}&skip=${skip}&limit=10`;
+    } else {
+      url = url + `/search?q=${word}&skip=${skip}&limit=10`;
+    }
+  } else {
+    url.searchParams.append("skip", skip);
+    url.searchParams.append("limit", 10);
+  }
   let dat = await fetch(url);
   dat = await dat.json();
-  return { data: dat.posts, total: dat.total };
+  return { data: dat.posts, total: dat.total, current: dat.posts.length };
 };
 
 function renderPosts(dat) {
@@ -76,7 +84,10 @@ function renderPosts(dat) {
 
 function renderPagination(count) {
   let paginator = document.querySelector(".paginator");
-  let cntr = count % 10 ? count / 10 + 1 : count / 10;
+
+  let cntr = count / 10;
+  cntr = cntr % 1 ? cntr : cntr++;
+
   for (let i = 0; i < cntr; ++i) {
     if (i === 4) {
       let paginatorItem = document.createElement("div");
@@ -101,17 +112,21 @@ function renderPagination(count) {
       }
     }
   }
-  paginator.addEventListener("click", (e) => {
-    if (e.target.classList == "paginatorItem") {
-      document.querySelector(".searchInput").value = "";
+  paginator.onclick = function (event) {
+    if (event.target.classList == "paginatorItem") {
+      console.log("click");
       document.querySelector(".postList").remove();
       document.querySelectorAll(".paginatorItem").forEach((item) => {
         item.classList.remove("active");
       });
-      renderPostsList((e.target.textContent - 1) * 10);
-      updatePaginator(e.target.textContent, cntr);
+      renderPostsList(
+        (event.target.textContent - 1) * 10,
+        document.querySelector(".searchInput").value
+      );
+
+      updatePaginator(event.target.textContent, cntr);
     }
-  });
+  };
 }
 
 function updatePaginator(current, last) {
@@ -219,22 +234,34 @@ const app = async () => {
   document.querySelector(".paginatorItem").classList.add("active");
 };
 
-async function renderPostsList(skip) {
+async function renderPostsList(skip, word) {
   createLoader();
-  const dat = await fetchData(skip);
+  const dat = await fetchData(skip, word);
   renderPosts(dat.data);
   deleteLoader();
 }
 
 async function search(word) {
+  let paginator = document.querySelector(".paginator");
   if (word.length === 0) {
     const dat = await fetchData(0);
     document.querySelector(".postList").remove();
     renderPosts(dat.data);
+    while (paginator.firstChild) {
+      paginator.removeChild(paginator.firstChild);
+    }
+    renderPagination(dat.total);
+    document.querySelector(".paginatorItem").classList.add("active");
   } else {
     const dat = await fetchData(0, word);
     document.querySelector(".postList").remove();
     renderPosts(dat.data);
+    while (paginator.firstChild) {
+      paginator.removeChild(paginator.firstChild);
+    }
+    renderPagination(dat.total);
+    if(document.querySelectorAll(".paginatorItem").length!==0){
+    document.querySelector(".paginatorItem").classList.add("active");}
   }
 }
 
