@@ -54,6 +54,12 @@ function renderPosts(dat) {
     postReactions.append(img);
     postReactions.append(item.reactions);
 
+    getLikes(item,img);
+
+    img.addEventListener("click", () => {
+      likes(item, img);
+    });
+
     li.append(userId);
     li.append(postId);
     li.append(postTitle);
@@ -248,6 +254,29 @@ function createLoader() {
 function deleteLoader() {
   let preloader = document.querySelector(".preloader");
   preloader.remove();
+}
+
+function likes(item, element) {
+  if (!element.classList.contains("liked")) {
+    console.log("here");
+    element.classList.add("liked");
+    element.nextSibling.textContent =
+      Number(element.nextSibling.textContent) + 1;
+    localStorage.setItem(item.id, Number(element.nextSibling.textContent));
+  } else {
+    element.classList.remove("liked");
+    element.nextSibling.textContent =
+      Number(element.nextSibling.textContent) - 1;
+    localStorage.removeItem(item.id);
+  }
+}
+
+function getLikes(item,element) {
+if(localStorage.getItem(item.id)){
+  element.classList.add("liked");
+  element.nextSibling.textContent =
+      Number(element.nextSibling.textContent) + 1;
+}
 }
 
 app();

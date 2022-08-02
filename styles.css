@@ -139,3 +139,7 @@ input[type=text] {
 .loaded .preloader {
   display: none;
 }
+
+.liked{
+  background:#d30d3f;
+}
